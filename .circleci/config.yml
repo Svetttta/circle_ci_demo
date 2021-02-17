@@ -50,7 +50,6 @@ workflows:
  version: 2
  tests:
    jobs:
-     - unittests:
-         context: lp_dev
+     - unittests
 
 # ----- DEV PIPELINE -----
