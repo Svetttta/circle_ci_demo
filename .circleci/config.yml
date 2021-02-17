@@ -37,7 +37,6 @@ jobs:
     executor: tests
     steps:
       - checkout
-      - step_restore_python_env
       - run:
           name: Print Current Build Number
           command: echo $CIRCLE_BUILD_NUM
