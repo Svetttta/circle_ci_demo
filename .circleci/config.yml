@@ -1,0 +1,57 @@
+version: 2.1
+
+orbs:
+  gcp-cli: circleci/gcp-cli@2.1.0
+
+#parameters:
+#  run_deployment_workflow:
+#    type: boolean
+#    default: True
+
+# ----- STEPS -----
+commands:
+  step_echo_1:
+    steps:
+      - run:
+        name: Command 1
+        command: echo 'Step echo 1'
+  step_echo_2:
+    steps:
+      - step_echo_1
+       - run:
+         name: Command 2
+         command: |
+           echo 'Hallo world!'
+           echo 'Step echo 2'
+         no_output_timeout: 2m
+
+# ----- EXECUTORS -----
+executors:
+  tests:
+    docker:
+      - image: circleci/python:3.7
+
+# ----- JOBS -----
+jobs:
+  unittests:
+    executor: tests
+    steps:
+      - checkout
+      - step_restore_python_env
+      - run:
+          name: Print Current Build Number
+          command: echo $CIRCLE_BUILD_NUM
+      - run:
+          name: Run unittests
+          command: python -m unittest
+
+
+# ----- WORKFLOWS -----
+workflows:
+ version: 2
+ tests:
+   jobs:
+     - unittests:
+         context: lp_dev
+
+# ----- DEV PIPELINE -----
