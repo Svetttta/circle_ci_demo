@@ -13,17 +13,17 @@ commands:
   step_echo_1:
     steps:
       - run:
-        name: Command 1
-        command: echo 'Step echo 1'
+          name: Command 1
+          command: echo 'Step echo 1'
   step_echo_2:
     steps:
       - step_echo_1
        - run:
-         name: Command 2
-         command: |
-           echo 'Hallo world!'
-           echo 'Step echo 2'
-         no_output_timeout: 2m
+          name: Command 2
+          command: |
+            echo 'Hallo world!'
+            echo 'Step echo 2'
+          no_output_timeout: 2m
 
 # ----- EXECUTORS -----
 executors:
