@@ -3,27 +3,30 @@ version: 2.1
 orbs:
   gcp-cli: circleci/gcp-cli@2.1.0
 
-#parameters:
-#  run_deployment_workflow:
-#    type: boolean
-#    default: True
+parameters:
+  run_deployment_workflow:
+    type: boolean
+    default: True
 
 # ----- STEPS -----
 commands:
-  step_echo_1:
+  step_print_gcp_func_name:
     steps:
       - run:
-          name: Command 1
-          command: echo 'Step echo 1'
-  step_echo_2:
+          name: Print GCP function name
+          command: echo Function name - $GCP_FUNCTION
+  step_print_gcp_info:
     steps:
-      - step_echo_1
+      - step_print_gcp_func_name
       - run:
-          name: Command 2
-          command: |
-            echo 'Hallo world!'
-            echo 'Step echo 2'
+          name: Print GCP project name
+          command: echo GCP project - $GCP_PROJECT
           no_output_timeout: 2m
+  step_show_working_dir:
+    steps:
+      - run:
+          name: Show working dir
+          command: ls -la
 
 # ----- EXECUTORS -----
 executors:
@@ -51,5 +54,23 @@ workflows:
  tests:
    jobs:
      - unittests
+
+ deployment:
+   when: << pipeline.parameters.run_deployment_workflow >>
+   jobs:
+     - step_print_gcp_info:
+         context: wf_dev
+         filters:
+           branches:
+             only:
+               - dev
+               - qa
+     - step_show_working_dir:
+         requires:
+           - step_print_gcp_info
+         filters:
+           branches:
+             only:
+               - dev
 
 # ----- DEV PIPELINE -----
