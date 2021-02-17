@@ -18,7 +18,7 @@ commands:
   step_echo_2:
     steps:
       - step_echo_1
-       - run:
+      - run:
           name: Command 2
           command: |
             echo 'Hallo world!'
