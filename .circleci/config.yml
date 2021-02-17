@@ -47,6 +47,15 @@ jobs:
           name: Run unittests
           command: python -m unittest
 
+  print_gcp_info:
+    steps:
+      - step_print_gcp_info
+
+  show_working_dir:
+    steps:
+      - step_show_working_dir
+
+
 
 # ----- WORKFLOWS -----
 workflows:
@@ -58,16 +67,16 @@ workflows:
  deployment:
    when: << pipeline.parameters.run_deployment_workflow >>
    jobs:
-     - step_print_gcp_info:
+     - print_gcp_info:
          context: wf_dev
          filters:
            branches:
              only:
                - dev
                - qa
-     - step_show_working_dir:
+     - show_working_dir:
          requires:
-           - step_print_gcp_info
+           - print_gcp_info
          filters:
            branches:
              only:
