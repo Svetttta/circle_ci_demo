@@ -33,6 +33,18 @@ executors:
   tests:
     docker:
       - image: circleci/python:3.7
+  python:
+    docker:
+      - image: circleci/python:3.7
+ #terraform:
+ #  docker:
+ #    - image: hashicorp/terraform:0.14.2
+ #gcp-sdk:
+ #  docker:
+ #    - image: google/cloud-sdk:latest
+  vault:
+    docker:
+      - image: vault
 
 # ----- JOBS -----
 jobs:
@@ -48,10 +60,12 @@ jobs:
           command: python -m unittest
 
   print_gcp_info:
+    executor: python
     steps:
       - step_print_gcp_info
 
   show_working_dir:
+    executor: python
     steps:
       - step_show_working_dir
 
