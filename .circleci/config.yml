@@ -53,7 +53,7 @@ commands:
           name: Create GCP bucket
           command: |
             gcp_list=$(gsutil ls | grep -P gs://$BUCKET_NAME/)
-            if  [[ $l ]]
+            if  [[ $gcp_list ]]
             then
               echo $BUCKET_NAME exists
             else
