@@ -48,6 +48,13 @@ commands:
               --runtime=python37 \
               --timeout=120 \
               --project $GCP_PROJECT
+  create_bucket:
+    steps:
+      - run:
+          name: Create bucket
+          command: |
+            set -e
+            gsutil mb gs://$BUCKET_NAME
 
 # ----- EXECUTORS -----
 executors:
@@ -105,6 +112,12 @@ jobs:
             equal: [gcloud pubsub topics list --filter=$PUBSUB_TOPIC, 'Listed 0 items.']
           steps:
             run: gcloud pubsub topics create $PUBSUB_TOPIC
+  dev_create_bucket:
+    executor: gcp-sdk
+    steps:
+      - checkout
+      - auth_gcp
+      - create_bucket
 
 
 # ----- WORKFLOWS -----
@@ -139,10 +152,17 @@ workflows:
            branches:
              only:
                - dev
+     - dev_create_bucket:
+         context: wf_dev
+         filters:
+           branches:
+             only:
+               - dev
      - dev_deploy_gcp_function:
          context: wf_dev
          requires:
            - dev_create_pubsub_queue
+           - dev_create_bucket
          filters:
            branches:
              only:
