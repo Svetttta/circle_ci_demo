@@ -90,6 +90,33 @@ jobs:
       - checkout
       - step_show_working_dir
 
+  qa_deploy_gcp_function:
+    executor: gcp-sdk
+    steps:
+      - checkout
+      - deploy_gcp_function
+  qa_create_pubsub_queue:
+    executor: gcp-sdk
+    steps:
+      - checkout
+      - auth_gcp
+      - when:
+          condition:
+            equal: [gcloud pubsub topics list --filter=$PUBSUB_TOPIC, 'Listed 0 items.']
+          steps:
+            run: gcloud pubsub topics create $PUBSUB_TOPIC
+  qa_create_bucket:
+    executor: gcp-sdk
+    steps:
+      - checkout
+      - auth_gcp
+      - when:
+          condition:
+            and:
+              - not: gsutil ls | grep -P gs://$BUCKET_NAME/
+          steps:
+            run: gsutil mb -p $GCP_PROJECT -l $GCP_REGION gs://$BUCKET_NAME
+
   dev_deploy_gcp_function:
     executor: gcp-sdk
     steps:
@@ -117,6 +144,32 @@ jobs:
           steps:
             run: gsutil mb -p $GCP_PROJECT -l $GCP_REGION gs://$BUCKET_NAME
 
+  prod_deploy_gcp_function:
+    executor: gcp-sdk
+    steps:
+      - checkout
+      - deploy_gcp_function
+  prod_create_pubsub_queue:
+    executor: gcp-sdk
+    steps:
+      - checkout
+      - auth_gcp
+      - when:
+          condition:
+            equal: [gcloud pubsub topics list --filter=$PUBSUB_TOPIC, 'Listed 0 items.']
+          steps:
+            run: gcloud pubsub topics create $PUBSUB_TOPIC
+  prod_create_bucket:
+    executor: gcp-sdk
+    steps:
+      - checkout
+      - auth_gcp
+      - when:
+          condition:
+            and:
+              - not: gsutil ls | grep -P gs://$BUCKET_NAME/
+          steps:
+            run: gsutil mb -p $GCP_PROJECT -l $GCP_REGION gs://$BUCKET_NAME
 
 # ----- WORKFLOWS -----
 workflows:
@@ -144,6 +197,28 @@ workflows:
                - dev
 
 # ----- DEV PIPELINE -----
+     - qa_create_pubsub_queue:
+         context: wf_qa
+         filters:
+           branches:
+             only:
+               - qa
+     - qa_create_bucket:
+         context: wf_qa
+         filters:
+           branches:
+             only:
+               - qa
+     - qa_deploy_gcp_function:
+         context: wf_qa
+         requires:
+           - qa_create_pubsub_queue
+           - qa_create_bucket
+         filters:
+           branches:
+             only:
+               - qa
+
      - dev_create_pubsub_queue:
          context: wf_dev
          filters:
@@ -165,3 +240,25 @@ workflows:
            branches:
              only:
                - dev
+
+     - prod_create_pubsub_queue:
+         context: wf_prod
+         filters:
+           branches:
+             only:
+               - prod
+     - prod_create_bucket:
+         context: wf_prod
+         filters:
+           branches:
+             only:
+               - prod
+     - prod_deploy_gcp_function:
+         context: wf_prod
+         requires:
+           - prod_create_pubsub_queue
+           - prod_create_bucket
+         filters:
+           branches:
+             only:
+               - prod
