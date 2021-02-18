@@ -53,8 +53,11 @@ commands:
       - run:
           name: Create bucket
           command: |
-            set -e
-            gsutil mb -p $GCP_PROJECT -l $GCP_REGION gs://$BUCKET_NAME
+            {
+              gsutil mb -p $GCP_PROJECT -l $GCP_REGION gs://$BUCKET_NAME &&
+            } || {
+              echo $BUCKET_NAME bucket already exists
+            }
 
 # ----- EXECUTORS -----
 executors:
