@@ -47,7 +47,6 @@ commands:
               --project $GCP_PROJECT
   create_bucket:
     steps:
-      - checkout
       - auth_gcp
       - run:
           name: Create GCP bucket
@@ -119,6 +118,7 @@ jobs:
   qa_create_bucket:
     executor: gcp-sdk
     steps:
+      - checkout
       - create_bucket
 
   dev_deploy_gcp_function:
@@ -139,6 +139,7 @@ jobs:
   dev_create_bucket:
     executor: gcp-sdk
     steps:
+      - checkout
       - create_bucket
 
   prod_deploy_gcp_function:
@@ -159,6 +160,7 @@ jobs:
   prod_create_bucket:
     executor: gcp-sdk
     steps:
+      - checkout
       - create_bucket
 
 # ----- WORKFLOWS -----
