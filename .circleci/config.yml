@@ -45,6 +45,20 @@ commands:
               --runtime=python37 \
               --timeout=120 \
               --project $GCP_PROJECT
+  create_bucket:
+    steps:
+      - checkout
+      - auth_gcp
+      steps:
+        name: Create GCP bucket
+        command: |
+          gcp_list=$(gsutil ls | grep -P gs://$BUCKET_NAME/)
+          if  [[ $l ]]
+          then
+            echo $BUCKET_NAME exists
+          else
+            gsutil mb -p $GCP_PROJECT -l $GCP_REGION gs://$BUCKET_NAME
+          fi
 
 # ----- EXECUTORS -----
 executors:
@@ -105,14 +119,7 @@ jobs:
   qa_create_bucket:
     executor: gcp-sdk
     steps:
-      - checkout
-      - auth_gcp
-      - when:
-          condition:
-            and:
-              - not: gsutil ls | grep -P gs://$BUCKET_NAME/ || False
-          steps:
-            run: gsutil mb -p $GCP_PROJECT -l $GCP_REGION gs://$BUCKET_NAME
+      - create_bucket
 
   dev_deploy_gcp_function:
     executor: gcp-sdk
@@ -132,14 +139,7 @@ jobs:
   dev_create_bucket:
     executor: gcp-sdk
     steps:
-      - checkout
-      - auth_gcp
-      - when:
-          condition:
-            and:
-              - not: gsutil ls | grep -P gs://$BUCKET_NAME/
-          steps:
-            run: gsutil mb -p $GCP_PROJECT -l $GCP_REGION gs://$BUCKET_NAME
+      - create_bucket
 
   prod_deploy_gcp_function:
     executor: gcp-sdk
@@ -159,14 +159,7 @@ jobs:
   prod_create_bucket:
     executor: gcp-sdk
     steps:
-      - checkout
-      - auth_gcp
-      - when:
-          condition:
-            and:
-              - not: gsutil ls | grep -P gs://$BUCKET_NAME/
-          steps:
-            run: gsutil mb -p $GCP_PROJECT -l $GCP_REGION gs://$BUCKET_NAME
+      - create_bucket
 
 # ----- WORKFLOWS -----
 workflows:
