@@ -219,14 +219,20 @@ workflows:
              only:
                - qa
 
+     - hold_dev_gcp:
+         type: approval
      - dev_create_pubsub_queue:
          context: wf_dev
+         requiers:
+           - hold_dev_gcp
          filters:
            branches:
              only:
                - dev
      - dev_create_bucket:
          context: wf_dev
+         requiers:
+           - hold_dev_gcp
          filters:
            branches:
              only:
@@ -241,14 +247,20 @@ workflows:
              only:
                - dev
 
+     - hold_prod_gcp:
+         type: approval
      - prod_create_pubsub_queue:
          context: wf_prod
+         requiers:
+           - hold_prod_gcp
          filters:
            branches:
              only:
                - prod
      - prod_create_bucket:
          context: wf_prod
+         requiers:
+           - hold_prod_gcp
          filters:
            branches:
              only:
