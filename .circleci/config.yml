@@ -40,6 +40,9 @@ commands:
       - run:
           name: Deploy To Google Cloud Functions
           command: |
+            ls -la
+
+            ls -la ./src
             ENTRYPOINT=main
             gcloud functions deploy $GCP_FUNCTION \
               --entry-point $ENTRYPOINT \
