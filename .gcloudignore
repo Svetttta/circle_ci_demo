@@ -1,0 +1,6 @@
+.git/
+.gitignore
+.gcloudignore
+*_test
+.env*
+xdev
