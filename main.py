@@ -1,0 +1,1 @@
+from lambdas.function_handler import store_data

@@ -28,6 +28,28 @@ commands:
           name: Show working dir
           command: ls -la
 
+  auth_gcp:
+    steps:
+      - run:
+          name: Authorize GCloud Command Line Tool # echo <GCP-KEY-FILE> | base64 --wrap=0
+          command: |
+            echo $GCP_SERVICE_KEY | base64 --decode | gcloud auth activate-service-account --key-file=-
+  deploy_gcp_function:
+    steps:
+      - auth_gcp
+      - run:
+          name: Deploy To Google Cloud Functions
+          command: |
+            ENTRYPOINT=main
+            gcloud functions deploy $GCP_FUNCTION \
+              --entry-point $ENTRYPOINT \
+              --trigger-http \
+              --region=$GCP_REGION \
+              --runtime=python37 \
+              --timeout=120 \
+              --source ./src/ \
+              --project $GCP_PROJECT
+
 # ----- EXECUTORS -----
 executors:
   tests:
@@ -39,12 +61,12 @@ executors:
  #terraform:
  #  docker:
  #    - image: hashicorp/terraform:0.14.2
- #gcp-sdk:
+ gcp-sdk:
+   docker:
+     - image: google/cloud-sdk:latest
+ #vault:
  #  docker:
- #    - image: google/cloud-sdk:latest
-  vault:
-    docker:
-      - image: vault
+ #    - image: vault
 
 # ----- JOBS -----
 jobs:
@@ -54,7 +76,7 @@ jobs:
       - checkout
       - run:
           name: Print Current Build Number
-          command: echo $CIRCLE_BUILD_NUM
+          command: echo BUILD $CIRCLE_BUILD_NUM
       - run:
           name: Run unittests
           command: python -m unittest
@@ -67,8 +89,14 @@ jobs:
   show_working_dir:
     executor: python
     steps:
+      - checkout
       - step_show_working_dir
 
+  dev_deploy_gcp_function:
+    executor: gcp-sdk
+    steps:
+      - checkout
+      - deploy_gcp_function
 
 
 # ----- WORKFLOWS -----
@@ -97,3 +125,10 @@ workflows:
                - dev
 
 # ----- DEV PIPELINE -----
+
+     - dev_deploy_gcp_function:
+         context: wf_dev
+         filters:
+           branches:
+             only:
+               - dev
