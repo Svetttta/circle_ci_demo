@@ -54,7 +54,7 @@ commands:
           name: Create bucket
           command: |
             set -e
-            gsutil mb gs://$BUCKET_NAME
+            gsutil mb -p $GCP_PROJECT -l $GCP_REGION gs://$BUCKET_NAME
 
 # ----- EXECUTORS -----
 executors:
