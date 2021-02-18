@@ -35,14 +35,10 @@ commands:
           command: |
             echo $GCP_SERVICE_KEY | base64 --decode | gcloud auth activate-service-account --key-file=-
   create_pubsub_queue:
-    - when:
-        condition:
-          equal: [gcloud pubsub topics list --filter=$PUBSUB_TOPIC, 'Listed 0 items.']
-        steps:
-          - run:
-            name: Create PubSub queue
-            command: |
-              gcloud pubsub topics create $PUBSUB_TOPIC
+    steps:
+      - run:
+        name: Create PubSub queue
+        command: gcloud pubsub topics create $PUBSUB_TOPIC
   deploy_gcp_function:
     steps:
       - auth_gcp
@@ -108,7 +104,11 @@ jobs:
     steps:
       - checkout
       - auth_gcp
-      - create_pubsub_queue
+      - when:
+          condition:
+            equal: [gcloud pubsub topics list --filter=$PUBSUB_TOPIC, 'Listed 0 items.']
+          steps:
+            - create_pubsub_queue
 
 
 # ----- WORKFLOWS -----
