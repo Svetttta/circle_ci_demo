@@ -46,7 +46,6 @@ commands:
               --region=$GCP_REGION \
               --runtime=python37 \
               --timeout=120 \
-              --source ./project \
               --project $GCP_PROJECT
 
 # ----- EXECUTORS -----
