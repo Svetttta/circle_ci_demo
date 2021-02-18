@@ -1,8 +1,5 @@
 version: 2.1
 
-#orbs:
-#  gcp-cli: circleci/gcp-cli@2.1.0
-
 parameters:
   run_deployment_workflow:
     type: boolean
@@ -113,7 +110,7 @@ jobs:
       - when:
           condition:
             and:
-              - not: gsutil ls | grep -P gs://$BUCKET_NAME/
+              - not: gsutil ls | grep -P gs://$BUCKET_NAME/ || False
           steps:
             run: gsutil mb -p $GCP_PROJECT -l $GCP_REGION gs://$BUCKET_NAME
 
