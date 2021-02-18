@@ -115,11 +115,11 @@ jobs:
             equal: [gcloud pubsub topics list --filter=$PUBSUB_TOPIC, 'Listed 0 items.']
           steps:
             run: gcloud pubsub topics create $PUBSUB_TOPIC
-  qa_create_bucket:
-    executor: gcp-sdk
-    steps:
-      - checkout
-      - create_bucket
+ #qa_create_bucket:
+ #  executor: gcp-sdk
+ #  steps:
+ #    - checkout
+ #    - create_bucket
 
   dev_deploy_gcp_function:
     executor: gcp-sdk
@@ -136,11 +136,11 @@ jobs:
             equal: [gcloud pubsub topics list --filter=$PUBSUB_TOPIC, 'Listed 0 items.']
           steps:
             run: gcloud pubsub topics create $PUBSUB_TOPIC
-  dev_create_bucket:
-    executor: gcp-sdk
-    steps:
-      - checkout
-      - create_bucket
+ #dev_create_bucket:
+ #  executor: gcp-sdk
+ #  steps:
+ #    - checkout
+ #    - create_bucket
 
   prod_deploy_gcp_function:
     executor: gcp-sdk
@@ -157,11 +157,11 @@ jobs:
             equal: [gcloud pubsub topics list --filter=$PUBSUB_TOPIC, 'Listed 0 items.']
           steps:
             run: gcloud pubsub topics create $PUBSUB_TOPIC
-  prod_create_bucket:
-    executor: gcp-sdk
-    steps:
-      - checkout
-      - create_bucket
+ #prod_create_bucket:
+ #  executor: gcp-sdk
+ #  steps:
+ #    - checkout
+ #    - create_bucket
 
 # ----- WORKFLOWS -----
 workflows:
