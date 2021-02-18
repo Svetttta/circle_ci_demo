@@ -221,6 +221,10 @@ workflows:
 
      - hold_dev_gcp:
          type: approval
+         filters:
+           branches:
+             only:
+               - dev
      - dev_create_pubsub_queue:
          context: wf_dev
          requires:
@@ -249,6 +253,10 @@ workflows:
 
      - hold_prod_gcp:
          type: approval
+         filters:
+           branches:
+             only:
+               - prod
      - prod_create_pubsub_queue:
          context: wf_prod
          requires:
