@@ -40,9 +40,8 @@ commands:
       - run:
           name: Deploy To Google Cloud Functions
           command: |
-            ENTRYPOINT=main
             gcloud functions deploy $GCP_FUNCTION \
-              --entry-point $ENTRYPOINT \
+              --entry-point store_data \
               --trigger-http \
               --region=$GCP_REGION \
               --runtime=python37 \
