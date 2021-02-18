@@ -1,2 +1,2 @@
 def store_data(event, context):
-    print("Store data to bucket")
+    print("Store data to  KW bucket")
