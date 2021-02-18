@@ -111,7 +111,9 @@ jobs:
       - checkout
       - auth_gcp
       - when:
-          condition: gsutil ls | grep -P gs://$BUCKET_NAME/
+          condition:
+            and:
+              - not: gsutil ls | grep -P gs://$BUCKET_NAME/
           steps:
             run: gsutil mb -p $GCP_PROJECT -l $GCP_REGION gs://$BUCKET_NAME
 
