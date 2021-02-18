@@ -195,12 +195,12 @@ workflows:
            branches:
              only:
                - qa
-     - qa_create_bucket:
-         context: wf_qa
-         filters:
-           branches:
-             only:
-               - qa
+    #- qa_create_bucket:
+    #    context: wf_qa
+    #    filters:
+    #      branches:
+    #        only:
+    #          - qa
      - qa_deploy_gcp_function:
          context: wf_qa
          requires:
@@ -225,14 +225,14 @@ workflows:
            branches:
              only:
                - dev
-     - dev_create_bucket:
-         context: wf_dev
-         requires:
-           - hold_dev_gcp
-         filters:
-           branches:
-             only:
-               - dev
+    #- dev_create_bucket:
+    #    context: wf_dev
+    #    requires:
+    #      - hold_dev_gcp
+    #    filters:
+    #      branches:
+    #        only:
+    #          - dev
      - dev_deploy_gcp_function:
          context: wf_dev
          requires:
@@ -257,14 +257,14 @@ workflows:
            branches:
              only:
                - prod
-     - prod_create_bucket:
-         context: wf_prod
-         requires:
-           - hold_prod_gcp
-         filters:
-           branches:
-             only:
-               - prod
+    #- prod_create_bucket:
+    #    context: wf_prod
+    #    requires:
+    #      - hold_prod_gcp
+    #    filters:
+    #      branches:
+    #        only:
+    #          - prod
      - prod_deploy_gcp_function:
          context: wf_prod
          requires:
