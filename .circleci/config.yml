@@ -34,6 +34,15 @@ commands:
           name: Authorize GCloud Command Line Tool # echo <GCP-KEY-FILE> | base64 --wrap=0
           command: |
             echo $GCP_SERVICE_KEY | base64 --decode | gcloud auth activate-service-account --key-file=-
+  create_pubsub_queue:
+    - when:
+        condition:
+          equal: [gcloud pubsub topics list --filter=$PUBSUB_TOPIC, 'Listed 0 items.']
+        steps:
+          - run:
+            name: Create PubSub queue
+            command: |
+              gcloud pubsub topics create $PUBSUB_TOPIC
   deploy_gcp_function:
     steps:
       - auth_gcp
@@ -42,7 +51,7 @@ commands:
           command: |
             gcloud functions deploy $GCP_FUNCTION \
               --entry-point store_data \
-              --trigger-http \
+              --trigger-topic $PUBSUB_TOPIC \
               --region=$GCP_REGION \
               --runtime=python37 \
               --timeout=120 \
@@ -83,7 +92,6 @@ jobs:
     executor: python
     steps:
       - step_print_gcp_info
-
   show_working_dir:
     executor: python
     steps:
@@ -95,6 +103,12 @@ jobs:
     steps:
       - checkout
       - deploy_gcp_function
+  dev_create_pubsub_queue:
+    executor: gcp-sdk
+    steps:
+      - checkout
+      - auth_gcp
+      - create_pubsub_queue
 
 
 # ----- WORKFLOWS -----
@@ -123,9 +137,16 @@ workflows:
                - dev
 
 # ----- DEV PIPELINE -----
-
+     - dev_create_pubsub_queue:
+         context: wf_dev
+         filters:
+           branches:
+             only:
+               - dev
      - dev_deploy_gcp_function:
          context: wf_dev
+         requires:
+           - dev_create_pubsub_queue
          filters:
            branches:
              only:
