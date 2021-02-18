@@ -51,7 +51,7 @@ commands:
       - run:
           name: Create GCP bucket
           command: |
-            gcp_list=$(gsutil ls | grep -P gs://$BUCKET_NAME/)
+            gcp_list=$(gsutil ls -p $GCP_PROJECT | grep -P gs://$BUCKET_NAME/)
             if  [[ $gcp_list ]]
             then
               echo $BUCKET_NAME exists
