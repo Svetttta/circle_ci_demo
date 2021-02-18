@@ -58,12 +58,12 @@ executors:
   python:
     docker:
       - image: circleci/python:3.7
+  gcp-sdk:
+    docker:
+      - image: google/cloud-sdk:latest
  #terraform:
  #  docker:
  #    - image: hashicorp/terraform:0.14.2
- gcp-sdk:
-   docker:
-     - image: google/cloud-sdk:latest
  #vault:
  #  docker:
  #    - image: vault
