@@ -48,16 +48,6 @@ commands:
               --runtime=python37 \
               --timeout=120 \
               --project $GCP_PROJECT
-  create_bucket:
-    steps:
-      - run:
-          name: Create bucket
-          command: |
-            {
-              gsutil mb -p $GCP_PROJECT -l $GCP_REGION gs://$BUCKET_NAME &&
-            } || {
-              echo $BUCKET_NAME bucket already exists
-            }
 
 # ----- EXECUTORS -----
 executors:
@@ -120,7 +110,10 @@ jobs:
     steps:
       - checkout
       - auth_gcp
-      - create_bucket
+      - when:
+          condition: gsutil ls | grep -P gs://$BUCKET_NAME/
+          steps:
+            run: gsutil mb -p $GCP_PROJECT -l $GCP_REGION gs://$BUCKET_NAME
 
 
 # ----- WORKFLOWS -----
