@@ -205,7 +205,7 @@ workflows:
          context: wf_qa
          requires:
            - qa_create_pubsub_queue
-           - qa_create_bucket
+           #- qa_create_bucket
          filters:
            branches:
              only:
@@ -237,7 +237,7 @@ workflows:
          context: wf_dev
          requires:
            - dev_create_pubsub_queue
-           - dev_create_bucket
+           #- dev_create_bucket
          filters:
            branches:
              only:
@@ -269,7 +269,7 @@ workflows:
          context: wf_prod
          requires:
            - prod_create_pubsub_queue
-           - prod_create_bucket
+           #- prod_create_bucket
          filters:
            branches:
              only:
