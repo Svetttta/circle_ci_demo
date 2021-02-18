@@ -34,11 +34,7 @@ commands:
           name: Authorize GCloud Command Line Tool # echo <GCP-KEY-FILE> | base64 --wrap=0
           command: |
             echo $GCP_SERVICE_KEY | base64 --decode | gcloud auth activate-service-account --key-file=-
-  create_pubsub_queue:
-    steps:
-      - run:
-        name: Create PubSub queue
-        command: gcloud pubsub topics create $PUBSUB_TOPIC
+
   deploy_gcp_function:
     steps:
       - auth_gcp
@@ -108,7 +104,7 @@ jobs:
           condition:
             equal: [gcloud pubsub topics list --filter=$PUBSUB_TOPIC, 'Listed 0 items.']
           steps:
-            - create_pubsub_queue
+            run: gcloud pubsub topics create $PUBSUB_TOPIC
 
 
 # ----- WORKFLOWS -----
